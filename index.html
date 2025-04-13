@@ -82,7 +82,7 @@
   <script>
     async function loadChartData() {
       try {
-        const res = await fetch('/api/finances');
+        const res = await fetch('https://mission-trip-api.onrender.com/api/finances');
         const json = await res.json();
         const ctx = document.getElementById('financeChart').getContext('2d');
         new Chart(ctx, {
