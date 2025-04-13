@@ -1,0 +1,58 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fafafa;
+  color: #2c2c2c;
+  margin: 0;
+  padding: 0;
+}
+header {
+  background-color: #e3f2fd;
+  color: #003366;
+  padding: 2rem;
+  text-align: center;
+}
+nav {
+  text-align: center;
+  background-color: #f0f0f0;
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+nav a {
+  margin: 0 1rem;
+  color: #003366;
+  text-decoration: none;
+}
+section {
+  max-width: 900px;
+  margin: auto;
+  padding: 4rem 1rem;
+}
+.team-member {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.photo-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #ccc;
+  margin-right: 1.5rem;
+}
+canvas {
+  margin: 2rem 0;
+}
+.bank-details {
+  padding: 1rem;
+  background: #fdfdfd;
+  border: 1px solid #cfd8dc;
+  border-radius: 8px;
+}
+footer {
+  background-color: #f0f0f0;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
