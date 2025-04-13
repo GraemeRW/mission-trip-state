@@ -91,7 +91,7 @@
             labels: json.labels,
             datasets: [{
               label: 'Raised Funds ($)',
-              data: json.data,
+              data: Array(json.labels.length).fill(50000),
               borderColor: '#1976d2',
               backgroundColor: 'transparent',
               borderWidth: 2,
