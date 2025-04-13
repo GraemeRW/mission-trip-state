@@ -99,6 +99,14 @@
               pointRadius: 0,
               pointHoverRadius: 4
             }]
+            {
+              label: `Target Goal (R${json.target.toLocaleString()})`,
+              data: Array(json.labels.length).fill(json.target || 0),
+              borderColor: 'red',
+              borderWidth: 3,
+              pointRadius: 0,
+              fill: false
+            },
           },
           options: {
             responsive: true,
