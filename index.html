@@ -82,42 +82,49 @@
   <script>
     async function loadChartData() {
       try {
-        const res = await fetch('https://mission-trip-api.onrender.com/api/finances');
+        const res = await fetch('https://your-backend.onrender.com/api/finances');
         const json = await res.json();
         const ctx = document.getElementById('financeChart').getContext('2d');
+
         new Chart(ctx, {
           type: 'line',
           data: {
             labels: json.labels,
-            datasets: [{
-              label: 'Raised Funds ($)',
-              data: Array(json.labels.length).fill(json.target || 0),
-              borderColor: '#1976d2',
-              backgroundColor: 'transparent',
-              borderWidth: 2,
-              tension: 0.3,
-              pointRadius: 0,
-              pointHoverRadius: 4
-            }]
-            {
-              label: `Target Goal (R${json.target.toLocaleString()})`,
-              data: Array(json.labels.length).fill(json.target || 0),
-              borderColor: 'red',
-              borderWidth: 3,
-              pointRadius: 0,
-              fill: false
-            },
+            datasets: [
+              {
+                label: 'Raised Funds (R)',
+                data: json.data,
+                borderColor: '#1976d2',
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                tension: 0.3,
+                pointRadius: 0,
+                pointHoverRadius: 4
+              },
+              {
+                label: 'Target Goal (R50,000)',
+                data: Array(json.labels.length).fill(50000),
+                borderColor: 'red',
+                borderWidth: 3,
+                pointRadius: 0,
+                fill: false
+              }
+            ]
           },
           options: {
             responsive: true,
             plugins: {
-              legend: { display: false }
+              legend: {
+                display: true,
+                position: 'top'
+              }
             },
             scales: {
               y: {
                 beginAtZero: true,
+                suggestedMax: 60000,
                 ticks: {
-                  callback: value => '$' + value / 1000 + 'K'
+                  callback: value => 'R' + value.toLocaleString()
                 }
               }
             }
