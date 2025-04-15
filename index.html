@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mission Trip to Holland</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Mission Trip to Holland</h1>
+    <p>Sharing the Gospel • Serving with Love</p>
+  </header>
+
+  <nav>
+    <a href="#mission">Mission</a>
+    <a href="#about">About Us</a>
+    <a href="#contributions">Contributions</a>
+  </nav>
+
+  <section id="mission">
+    <h2>Mission Statement</h2>
+    <p>Our mission is to share the gospel, serve the local communities in Holland, and grow together as a team through faith and outreach.</p>
+  </section>
+
+  <section id="about">
+    <h2>Meet the Team</h2>
+    <div class="team-member"><div class="photo-placeholder"></div><div class="info"><h3>Bianca Basson</h3><p><em>Personal statement will go here.</em></p><p><strong>Contact:</strong> [to be added]</p></div></div>
+    <div class="team-member"><div class="photo-placeholder"></div><div class="info"><h3>Clint Cupido</h3><p><em>Personal statement will go here.</em></p><p><strong>Contact:</strong> [to be added]</p></div></div>
+    <div class="team-member"><div class="photo-placeholder"></div><div class="info"><h3>Graeme Weber</h3><p><em>Personal statement will go here.</em></p><p><strong>Contact:</strong> [to be added]</p></div></div>
+    <div class="team-member"><div class="photo-placeholder"></div><div class="info"><h3>Kevin Delorme</h3><p><em>Personal statement will go here.</em></p><p><strong>Contact:</strong> [to be added]</p></div></div>
+  </section>
+
+  <section id="contributions">
+    <h2>Contributions</h2>
+    <canvas id="financeChart" height="100"></canvas>
+    <div class="bank-details">
+      <h3>Bank Account Details</h3>
+      <p><strong>Bank:</strong> [Bank Name]</p>
+      <p><strong>Account Holder:</strong> [Mission Team Holland]</p>
+      <p><strong>Account Number:</strong> [123 456 7890]</p>
+      <p><strong>Branch Code:</strong> [000000]</p>
+      <p><strong>Reference:</strong> Your Name + Mission</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Holland Mission Team. All rights reserved.</p>
+  </footer>
+
+  <script>
+    async function loadChartData() {
+      const res = await fetch('https://bfydvxpeyihkjbfarazq.supabase.co/rest/v1/finances?select=*', {
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmeWR2eHBleWloa2piZmFyYXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTExNDEsImV4cCI6MjA2MDI4NzE0MX0.r7IYDSK2PCafQ5YqRX_Vznp4QrC1EFJJfhzPKDkRhC4',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmeWR2eHBleWloa2piZmFyYXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTExNDEsImV4cCI6MjA2MDI4NzE0MX0.r7IYDSK2PCafQ5YqRX_Vznp4QrC1EFJJfhzPKDkRhC4'
+        }
+      });
+      const data = await res.json();
+
+      const labels = data.map(row => row.date);
+      const amounts = data.map(row => parseFloat(row.total_amount));
+      const target = data.find(row => row.target)?.target || 0;
+
+      const ctx = document.getElementById('financeChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Raised Funds (R)',
+              data: amounts,
+              borderColor: '#1976d2',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              tension: 0.3,
+              pointRadius: 0,
+              pointHoverRadius: 4
+            },
+            {
+              label: `Target Goal (R${target.toLocaleString()})`,
+              data: Array(labels.length).fill(target),
+              borderColor: 'red',
+              borderWidth: 3,
+              pointRadius: 0,
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              suggestedMax: target * 1.2,
+              ticks: {
+                callback: value => 'R' + value.toLocaleString()
+              }
+            }
+          }
+        }
+      });
+    }
+
+    loadChartData();
+  </script>
+</body>
+</html>
