@@ -1,11 +1,11 @@
-/* Default styles (fallback for browsers without prefers-color-scheme support) */
+/* Default styles (light theme fallback) */
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #fafafa;
   color: #2c2c2c;
   margin: 0;
   padding: 0;
-  transition: background-color 0.3s, color 0.3s; /* Smooth theme transitions */
+  transition: background-color 0.3s, color 0.3s;
 }
 
 header {
@@ -52,8 +52,8 @@ section {
 
 canvas#financeChart {
   margin: 2rem 0;
-  max-width: 100%; /* Ensure responsiveness on mobile */
-  background-color: #ffffff; /* Default for light mode */
+  max-width: 100%;
+  background-color: #ffffff;
 }
 
 .bank-details {
@@ -85,47 +85,9 @@ footer {
   background-color: #005599;
 }
 
-/* Light theme (when device prefers light or no preference) */
-@media (prefers-color-scheme: light) {
-  body {
-    background-color: #fafafa;
-    color: #2c2c2c;
-  }
-  header {
-    background-color: #e3f2fd;
-    color: #003366;
-  }
-  nav {
-    background-color: #f0f0f0;
-  }
-  nav a {
-    color: #003366;
-  }
-  .photo-placeholder {
-    background-color: #ccc;
-  }
-  .bank-details {
-    background: #fdfdfd;
-    border-color: #cfd8dc;
-  }
-  footer {
-    background-color: #f0f0f0;
-  }
-  canvas#financeChart {
-    background-color: #ffffff;
-  }
-  #themeToggle {
-    background-color: #003366;
-    color: #ffffff;
-  }
-  #themeToggle:hover {
-    background-color: #005599;
-  }
-}
-
-/* Dark theme (when device prefers dark) */
+/* Dark theme */
 @media (prefers-color-scheme: dark) {
-  body {
+  body:not(.light) {
     background-color: #1a1a1a;
     color: #e0e0e0;
   }
@@ -150,7 +112,7 @@ footer {
     background-color: #2c2c2c;
   }
   canvas#financeChart {
-    background-color: #333333; /* Ensure contrast with y-axis labels */
+    background-color: #333333;
   }
   #themeToggle {
     background-color: #b3d4fc;
@@ -161,7 +123,7 @@ footer {
   }
 }
 
-/* Manual theme override classes */
+/* Manual overrides */
 body.light {
   background-color: #fafafa !important;
   color: #2c2c2c !important;
@@ -232,33 +194,10 @@ body.dark #themeToggle:hover {
   background-color: #d1e4ff !important;
 }
 
-/* Fallback for browsers without prefers-color-scheme */
+/* Fallback for no prefers-color-scheme support */
 @media not all and (prefers-color-scheme: dark) {
-  body {
+  body:not(.dark) {
     background-color: #fafafa;
     color: #2c2c2c;
-  }
-  header {
-    background-color: #e3f2fd;
-    color: #003366;
-  }
-  nav {
-    background-color: #f0f0f0;
-  }
-  nav a {
-    color: #003366;
-  }
-  .photo-placeholder {
-    background-color: #ccc;
-  }
-  .bank-details {
-    background: #fdfdfd;
-    border-color: #cfd8dc;
-  }
-  footer {
-    background-color: #f0f0f0;
-  }
-  canvas#financeChart {
-    background-color: #ffffff;
   }
 }
