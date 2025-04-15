@@ -50,65 +50,73 @@
   </footer>
 
   <script>
+    async function loadChartData() {
+  try {
     const res = await fetch('https://bfydvxpeyihkjbfarazq.supabase.co/rest/v1/finances?select=*', {
       headers: {
         apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmeWR2eHBleWloa2piZmFyYXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTExNDEsImV4cCI6MjA2MDI4NzE0MX0.r7IYDSK2PCafQ5YqRX_Vznp4QrC1EFJJfhzPKDkRhC4',
         Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmeWR2eHBleWloa2piZmFyYXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTExNDEsImV4cCI6MjA2MDI4NzE0MX0.r7IYDSK2PCafQ5YqRX_Vznp4QrC1EFJJfhzPKDkRhC4'
       }
     });
+    if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error('Expected an array from API');
 
-      const data = await res.json();
+    const labels = data.map(row => row.date || 'Unknown');
+    const amounts = data.map(row => parseFloat(row.total_amount || 0));
+    const target = data.find(row => row.target)?.target || 0;
 
-      const labels = data.map(row => row.date || 'No Date);
-      const amounts = data.map(row => parseFloat(row.total_amount) || 0);
-      const target = data.find(row => row.target)?.target || 0;
-
-      const ctx = document.getElementById('financeChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Raised Funds (R)',
-              data: amounts,
-              borderColor: '#1976d2',
-              backgroundColor: 'transparent',
-              borderWidth: 2,
-              tension: 0.3,
-              pointRadius: 0,
-              pointHoverRadius: 4
-            },
-            {
-              label: `Target Goal (R${target.toLocaleString()})`,
-              data: Array(labels.length).fill(target),
-              borderColor: 'red',
-              borderWidth: 3,
-              pointRadius: 0,
-              fill: false
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              display: true,
-              position: 'top'
-            }
+    const ctx = document.getElementById('financeChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Raised Funds (R)',
+            data: amounts,
+            borderColor: '#1976d2',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            tension: 0.3,
+            pointRadius: 0,
+            pointHoverRadius: 4
           },
-          scales: {
-            y: {
-              beginAtZero: true,
-              suggestedMax: target * 1.2,
-              ticks: {
-                callback: value => 'R' + value.toLocaleString()
-              }
+          {
+            label: `Target Goal (R${target.toLocaleString()})`,
+            data: Array(labels.length).fill(target),
+            borderColor: 'red',
+            borderWidth: 3,
+            pointRadius: 0,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            suggestedMax: target * 1.2,
+            ticks: {
+              callback: value => 'R' + value.toLocaleString()
             }
           }
         }
-      });
-    }
+      }
+    });
+  } catch (error) {
+    console.error('Failed to load chart data:', error);
+    const canvas = document.getElementById('financeChart');
+    canvas.insertAdjacentHTML('afterend', '<p style="color: red;">Error loading chart data. Please try again later.</p>');
+  }
+}
 
     loadChartData();
   </script>
