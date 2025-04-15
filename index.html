@@ -11,7 +11,6 @@
   <header>
     <h1>Mission Trip to Holland</h1>
     <p>Sharing the Gospel • Serving with Love</p>
-    <!-- Theme toggle button -->
     <button id="themeToggle">Toggle Theme</button>
   </header>
 
@@ -48,181 +47,180 @@
   </section>
 
   <footer>
-    <p>&copy; 2025 Holland Mission Team. All rights reserved.</p>
+    <p>© 2025 Holland Mission Team. All rights reserved.</p>
   </footer>
 
   <script>
-  // Theme toggle functionality
-  const themeToggle = document.getElementById('themeToggle');
-  const body = document.body;
-  let currentTheme = localStorage.getItem('theme') || 'auto';
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    let currentTheme = localStorage.getItem('theme') || 'auto';
 
-  function applyTheme(theme) {
-    console.log('Applying theme:', theme);
-    if (theme === 'light') {
-      body.classList.remove('dark');
-      body.classList.add('light');
-    } else if (theme === 'dark') {
-      body.classList.remove('light');
-      body.classList.add('dark');
-    } else {
-      body.classList.remove('light', 'dark'); // Auto: use prefers-color-scheme
+    function applyTheme(theme) {
+      console.log('Applying theme:', theme);
+      if (theme === 'light') {
+        body.classList.remove('dark');
+        body.classList.add('light');
+      } else if (theme === 'dark') {
+        body.classList.remove('light');
+        body.classList.add('dark');
+      } else {
+        body.classList.remove('light', 'dark'); // Auto: use prefers-color-scheme
+      }
+      localStorage.setItem('theme', theme);
+      updateChart(); // Redraw chart with new theme colors
     }
-    localStorage.setItem('theme', theme);
-    updateChart(); // Redraw chart with new theme colors
-  }
 
-  themeToggle.addEventListener('click', () => {
-    currentTheme = currentTheme === 'light' ? 'dark' : currentTheme === 'dark' ? 'auto' : 'light';
-    console.log('Toggled to theme:', currentTheme);
+    themeToggle.addEventListener('click', () => {
+      currentTheme = currentTheme === 'light' ? 'dark' : currentTheme === 'dark' ? 'auto' : 'light';
+      console.log('Toggled to theme:', currentTheme);
+      applyTheme(currentTheme);
+      themeToggle.textContent = `Switch to ${currentTheme === 'light' ? 'Dark' : currentTheme === 'dark' ? 'Auto' : 'Light'} Theme`;
+    });
+
+    // Apply saved theme on load
     applyTheme(currentTheme);
     themeToggle.textContent = `Switch to ${currentTheme === 'light' ? 'Dark' : currentTheme === 'dark' ? 'Auto' : 'Light'} Theme`;
-  });
 
-  // Apply saved theme on load
-  applyTheme(currentTheme);
-  themeToggle.textContent = `Switch to ${currentTheme === 'light' ? 'Dark' : currentTheme === 'dark' ? 'Auto' : 'Light'} Theme`;
+    // Chart rendering
+    let chartInstance = null;
 
-  // Chart rendering
-  let chartInstance = null;
-
-  function getThemeColors() {
-    const isDark = body.classList.contains('dark') || 
-      (!body.classList.contains('light') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    console.log('Is dark theme:', isDark);
-    return {
-      textColor: isDark ? '#f0f0f0' : '#2c2c2c', // Brighter white for dark mode
-      gridColor: isDark ? '#555555' : '#cfd8dc',
-      backgroundColor: isDark ? '#333333' : '#ffffff' // Slightly lighter background for chart
-    };
-  }
-
-  async function updateChart() {
-    const canvas = document.getElementById('financeChart');
-    if (!canvas) {
-      console.error('Canvas element with ID "financeChart" not found');
-      return;
+    function getThemeColors() {
+      const isDark = body.classList.contains('dark') || 
+        (!body.classList.contains('light') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      console.log('Is dark theme:', isDark);
+      return {
+        textColor: isDark ? '#ffffff' : '#2c2c2c', // Pure white for dark mode visibility
+        gridColor: isDark ? '#555555' : '#cfd8dc',
+        backgroundColor: isDark ? '#333333' : '#ffffff'
+      };
     }
 
-    try {
-      if (typeof Chart === 'undefined') {
-        throw new Error('Chart.js is not loaded');
-      }
-      console.log('Chart.js version:', Chart.version);
-
-      console.log('Starting API fetch...');
-      const res = await fetch('https://bfydvxpeyihkjbfarazq.supabase.co/rest/v1/finances?select=*', {
-        headers: {
-          apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmeWR2eHBleWloa2piZmFyYXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTExNDEsImV4cCI6MjA2MDI4NzE0MX0.r7IYDSK2PCafQ5YqRX_Vznp4QrC1EFJJfhzPKDkRhC4',
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6imJmeWR2eHBleWloa2piZmFyYXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTExNDEsImV4cCI6MjA2MDI4NzE0MX0.r7IYDSK2PCafQ5YqRX_Vznp4QrC1EFJJfhzPKDkRhC4'
-        }
-      });
-      console.log('API response status:', res.status);
-      if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-
-      const data = await res.json();
-      console.log('API data:', data);
-      if (!Array.isArray(data)) throw new Error('Expected an array from API');
-
-      if (data.length === 0) {
-        console.log('No data returned from API');
-        canvas.insertAdjacentHTML('afterend', '<p>No contribution data available yet.</p>');
+    async function updateChart() {
+      const canvas = document.getElementById('financeChart');
+      if (!canvas) {
+        console.error('Canvas element with ID "financeChart" not found');
         return;
       }
 
-      const labels = data.map(row => row.date || 'Unknown');
-      const amounts = data.map(row => parseFloat(row.total_amount || 0));
-      const target = data.find(row => row.target)?.target || 0;
-      console.log('Chart labels:', labels);
-      console.log('Chart amounts:', amounts);
-      console.log('Chart target:', target);
-
-      const colors = getThemeColors();
-      const ctx = canvas.getContext('2d');
-
-      // Destroy existing chart if it exists
-      if (chartInstance) {
-        chartInstance.destroy();
-      }
-
-      chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Raised Funds (R)',
-              data: amounts,
-              borderColor: '#1976d2',
-              backgroundColor: 'transparent',
-              borderWidth: 2,
-              tension: 0.3,
-              pointRadius: 0,
-              pointHoverRadius: 4
-            },
-            {
-              label: `Target Goal (R${target.toLocaleString()})`,
-              data: Array(labels.length).fill(target),
-              borderColor: 'red',
-              borderWidth: 3,
-              pointRadius: 0,
-              fill: false
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              display: true,
-              position: 'top',
-              labels: {
-                color: colors.textColor
-              }
-            }
-          },
-          scales: {
-            x: {
-              ticks: {
-                display: false // Hide x-axis labels
-              },
-              grid: {
-                color: colors.gridColor
-              }
-            },
-            y: {
-              beginAtZero: true,
-              suggestedMax: target * 1.2,
-              ticks: {
-                callback: value => 'R' + value.toLocaleString(),
-                color: colors.textColor
-              },
-              grid: {
-                color: colors.gridColor
-              }
-            }
-          },
-          // Ensure chart background is theme-compatible
-          backgroundColor: colors.backgroundColor
+      try {
+        if (typeof Chart === 'undefined') {
+          throw new Error('Chart.js is not loaded');
         }
-      });
-      console.log('Chart initialized successfully');
-    } catch (error) {
-      console.error('Failed to load chart data:', error);
-      canvas.insertAdjacentHTML('afterend', `<p style="color: red;">Error loading chart: ${error.message}</p>`);
-    }
-  }
+        console.log('Chart.js version:', Chart.version);
 
-  // Initial chart render
-  updateChart();
+        console.log('Starting API fetch...');
+        const res = await fetch('https://bfydvxpeyihkjbfarazq.supabase.co/rest/v1/finances?select=*', {
+          headers: {
+            apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmeWR2eHBleWloa2piZmFyYXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTExNDEsImV4cCI6MjA2MDI4NzE0MX0.r7IYDSK2PCafQ5YqRX_Vznp4QrC1EFJJfhzPKDkRhC4',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmeWR2eHBleWloa2piZmFyYXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTExNDEsImV4cCI6MjA2MDI4NzE0MX0.r7IYDSK2PCafQ5YqRX_Vznp4QrC1EFJJfhzPKDkRhC4'
+          }
+        });
+        console.log('API response status:', res.status);
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
-  // Redraw chart on theme change
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    console.log('Device theme changed');
-    if (!body.classList.contains('light') && !body.classList.contains('dark')) {
-      updateChart();
+        const data = await res.json();
+        console.log('API data:', data);
+        if (!Array.isArray(data)) throw new Error('Expected an array from API');
+
+        if (data.length === 0) {
+          console.log('No data returned from API');
+          canvas.insertAdjacentHTML('afterend', '<p>No contribution data available yet.</p>');
+          return;
+        }
+
+        const labels = data.map(row => row.date || 'Unknown');
+        const amounts = data.map(row => parseFloat(row.total_amount || 0));
+        const target = data.find(row => row.target)?.target || 0;
+        console.log('Chart labels:', labels);
+        console.log('Chart amounts:', amounts);
+        console.log('Chart target:', target);
+
+        const colors = getThemeColors();
+        const ctx = canvas.getContext('2d');
+
+        // Destroy existing chart if it exists
+        if (chartInstance) {
+          chartInstance.destroy();
+        }
+
+        chartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Raised Funds (R)',
+                data: amounts,
+                borderColor: '#1976d2',
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                tension: 0.3,
+                pointRadius: 0,
+                pointHoverRadius: 4
+              },
+              {
+                label: `Target Goal (R${target.toLocaleString()})`,
+                data: Array(labels.length).fill(target),
+                borderColor: 'red',
+                borderWidth: 3,
+                pointRadius: 0,
+                fill: false
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                  color: colors.textColor
+                }
+              }
+            },
+            scales: {
+              x: {
+                ticks: {
+                  display: false // Hide x-axis labels
+                },
+                grid: {
+                  color: colors.gridColor
+                }
+              },
+              y: {
+                beginAtZero: true,
+                suggestedMax: target * 1.2,
+                ticks: {
+                  callback: value => 'R' + value.toLocaleString(),
+                  color: colors.textColor
+                },
+                grid: {
+                  color: colors.gridColor
+                }
+              }
+            },
+            backgroundColor: colors.backgroundColor
+          }
+        });
+        console.log('Chart initialized successfully');
+      } catch (error) {
+        console.error('Failed to load chart data:', error);
+        canvas.insertAdjacentHTML('afterend', `<p style="color: red;">Error loading chart: ${error.message}</p>`);
+      }
     }
-  });
-</script>
+
+    // Initial chart render
+    updateChart();
+
+    // Redraw chart on theme change
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      console.log('Device theme changed');
+      if (!body.classList.contains('light') && !body.classList.contains('dark')) {
+        updateChart();
+      }
+    });
+  </script>
 </body>
 </html>
