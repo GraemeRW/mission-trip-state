@@ -62,7 +62,7 @@
     const data = await res.json();
     if (!Array.isArray(data)) throw new Error('Expected an array from API');
 
-    const labels = data.map(row => "" || 'Unknown');
+    const labels = data.map(row => "");
     const amounts = data.map(row => parseFloat(row.total_amount || 0));
     const target = data.find(row => row.target)?.target || 0;
 
