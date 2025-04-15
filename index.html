@@ -11,6 +11,8 @@
   <header>
     <h1>Mission Trip to Holland</h1>
     <p>Sharing the Gospel • Serving with Love</p>
+    <!-- Theme toggle button -->
+    <button id="themeToggle">Toggle Theme</button>
   </header>
 
   <nav>
@@ -50,7 +52,49 @@
   </footer>
 
   <script>
-    async function loadChartData() {
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    let currentTheme = localStorage.getItem('theme') || 'auto';
+
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        body.classList.remove('dark');
+        body.classList.add('light');
+      } else if (theme === 'dark') {
+        body.classList.remove('light');
+        body.classList.add('dark');
+      } else {
+        body.classList.remove('light', 'dark'); // Auto: use prefers-color-scheme
+      }
+      localStorage.setItem('theme', theme);
+      updateChart(); // Redraw chart with new theme colors
+    }
+
+    themeToggle.addEventListener('click', () => {
+      currentTheme = currentTheme === 'light' ? 'dark' : currentTheme === 'dark' ? 'auto' : 'light';
+      applyTheme(currentTheme);
+      themeToggle.textContent = `Switch to ${currentTheme === 'light' ? 'Dark' : currentTheme === 'dark' ? 'Auto' : 'Light'} Theme`;
+    });
+
+    // Apply saved theme on load
+    applyTheme(currentTheme);
+    themeToggle.textContent = `Switch to ${currentTheme === 'light' ? 'Dark' : currentTheme === 'dark' ? 'Auto' : 'Light'} Theme`;
+
+    // Chart rendering
+    let chartInstance = null;
+
+    function getThemeColors() {
+      const isDark = body.classList.contains('dark') || 
+        (!body.classList.contains('light') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      return {
+        textColor: isDark ? '#e0e0e0' : '#2c2c2c',
+        gridColor: isDark ? '#4a4a4a' : '#cfd8dc',
+        backgroundColor: isDark ? '#2c2c2c' : '#ffffff'
+      };
+    }
+
+    async function updateChart() {
       const canvas = document.getElementById('financeChart');
       if (!canvas) {
         console.error('Canvas element with ID "financeChart" not found');
@@ -90,8 +134,15 @@
         console.log('Chart amounts:', amounts);
         console.log('Chart target:', target);
 
+        const colors = getThemeColors();
         const ctx = canvas.getContext('2d');
-        new Chart(ctx, {
+
+        // Destroy existing chart if it exists
+        if (chartInstance) {
+          chartInstance.destroy();
+        }
+
+        chartInstance = new Chart(ctx, {
           type: 'line',
           data: {
             labels: labels,
@@ -121,20 +172,31 @@
             plugins: {
               legend: {
                 display: true,
-                position: 'top'
+                position: 'top',
+                labels: {
+                  color: colors.textColor
+                }
               }
             },
             scales: {
               x: {
                 ticks: {
                   display: false // Hide x-axis labels
+                },
+                grid: {
+                  color: colors.gridColor,
+                  display: false
                 }
               },
               y: {
                 beginAtZero: true,
                 suggestedMax: target * 1.2,
                 ticks: {
-                  callback: value => 'R' + value.toLocaleString()
+                  callback: value => 'R' + value.toLocaleString(),
+                  color: colors.textColor
+                },
+                grid: {
+                  color: colors.gridColor
                 }
               }
             }
@@ -147,7 +209,15 @@
       }
     }
 
-    loadChartData();
+    // Initial chart render
+    updateChart();
+
+    // Redraw chart on theme change
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if (!body.classList.contains('light') && !body.classList.contains('dark')) {
+        updateChart();
+      }
+    });
   </script>
 </body>
 </html>

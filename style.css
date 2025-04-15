@@ -1,16 +1,20 @@
+/* Default styles (fallback for browsers without prefers-color-scheme support) */
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #fafafa;
   color: #2c2c2c;
   margin: 0;
   padding: 0;
+  transition: background-color 0.3s, color 0.3s; /* Smooth theme transitions */
 }
+
 header {
   background-color: #e3f2fd;
   color: #003366;
   padding: 2rem;
   text-align: center;
 }
+
 nav {
   text-align: center;
   background-color: #f0f0f0;
@@ -19,21 +23,25 @@ nav {
   top: 0;
   z-index: 1000;
 }
+
 nav a {
   margin: 0 1rem;
   color: #003366;
   text-decoration: none;
 }
+
 section {
   max-width: 900px;
   margin: auto;
   padding: 4rem 1rem;
 }
+
 .team-member {
   display: flex;
   align-items: center;
   margin-bottom: 1.5rem;
 }
+
 .photo-placeholder {
   width: 80px;
   height: 80px;
@@ -41,18 +49,128 @@ section {
   background-color: #ccc;
   margin-right: 1.5rem;
 }
+
 canvas {
   margin: 2rem 0;
 }
+
 .bank-details {
   padding: 1rem;
   background: #fdfdfd;
   border: 1px solid #cfd8dc;
   border-radius: 8px;
 }
+
 footer {
   background-color: #f0f0f0;
   text-align: center;
   padding: 1rem;
   font-size: 0.9rem;
+}
+
+/* Light theme (when device prefers light or no preference) */
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #fafafa;
+    color: #2c2c2c;
+  }
+  header {
+    background-color: #e3f2fd;
+    color: #003366;
+  }
+  nav {
+    background-color: #f0f0f0;
+  }
+  nav a {
+    color: #003366;
+  }
+  .photo-placeholder {
+    background-color: #ccc;
+  }
+  .bank-details {
+    background: #fdfdfd;
+    border-color: #cfd8dc;
+  }
+  footer {
+    background-color: #f0f0f0;
+  }
+}
+
+/* Dark theme (when device prefers dark) */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+  }
+  header {
+    background-color: #1e3a5f;
+    color: #b3d4fc;
+  }
+  nav {
+    background-color: #2c2c2c;
+  }
+  nav a {
+    color: #b3d4fc;
+  }
+  .photo-placeholder {
+    background-color: #555;
+  }
+  .bank-details {
+    background: #2c2c2c;
+    border-color: #4a4a4a;
+  }
+  footer {
+    background-color: #2c2c2c;
+  }
+}
+
+/* Class for manual theme override (optional, used with JS toggle) */
+body.light {
+  background-color: #fafafa !important;
+  color: #2c2c2c !important;
+}
+body.light header {
+  background-color: #e3f2fd !important;
+  color: #003366 !important;
+}
+body.light nav {
+  background-color: #f0f0f0 !important;
+}
+body.light nav a {
+  color: #003366 !important;
+}
+body.light .photo-placeholder {
+  background-color: #ccc !important;
+}
+body.light .bank-details {
+  background: #fdfdfd !important;
+  border-color: #cfd8dc !important;
+}
+body.light footer {
+  background-color: #f0f0f0 !important;
+}
+
+body.dark {
+  background-color: #1a1a1a !important;
+  color: #e0e0e0 !important;
+}
+body.dark header {
+  background-color: #1e3a5f !important;
+  color: #b3d4fc !important;
+}
+body.dark nav {
+  background-color: #2c2c2c !important;
+}
+body.dark nav a {
+  color: #b3d4fc !important;
+}
+body.dark .photo-placeholder {
+  background-color: #555 !important;
+}
+body.dark .bank-details {
+  background: #2c2c2c !important;
+  border-color: #4a4a4a !important;
+}
+body.dark footer {
+  background-color: #2c2c2c !important;
 }
