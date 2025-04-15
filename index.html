@@ -62,7 +62,13 @@
     const data = await res.json();
     if (!Array.isArray(data)) throw new Error('Expected an array from API');
 
-    const labels = data.map(row => "");
+    if (data.length === 0) {
+      const canvas = document.getElementById('financeChart');
+      canvas.insertAdjacentHTML('afterend', '<p>No contribution data available yet.</p>');
+      return;
+    }
+
+    const labels = data.map(row => row.date || 'Unknown');
     const amounts = data.map(row => parseFloat(row.total_amount || 0));
     const target = data.find(row => row.target)?.target || 0;
 
@@ -101,6 +107,11 @@
           }
         },
         scales: {
+          x: {
+            ticks: {
+              display: false // Hide x-axis labels
+            }
+          },
           y: {
             beginAtZero: true,
             suggestedMax: target * 1.2,
@@ -117,6 +128,8 @@
     canvas.insertAdjacentHTML('afterend', '<p style="color: red;">Error loading chart data. Please try again later.</p>');
   }
 }
+
+loadChartData();
 
     loadChartData();
   </script>
