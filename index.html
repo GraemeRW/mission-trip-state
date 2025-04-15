@@ -57,18 +57,15 @@
     let currentTheme = localStorage.getItem('theme') || 'auto';
 
     function applyTheme(theme) {
-      console.log('Applying theme:', theme);
+      console.log('Applying theme:', theme, 'User Agent:', navigator.userAgent);
+      body.classList.remove('light', 'dark');
       if (theme === 'light') {
-        body.classList.remove('dark');
         body.classList.add('light');
       } else if (theme === 'dark') {
-        body.classList.remove('light');
         body.classList.add('dark');
-      } else {
-        body.classList.remove('light', 'dark'); // Auto: use prefers-color-scheme
       }
       localStorage.setItem('theme', theme);
-      updateChart(); // Redraw chart with new theme colors
+      updateChart();
     }
 
     themeToggle.addEventListener('click', () => {
@@ -79,6 +76,7 @@
     });
 
     // Apply saved theme on load
+    console.log('Initial theme:', currentTheme);
     applyTheme(currentTheme);
     themeToggle.textContent = `Switch to ${currentTheme === 'light' ? 'Dark' : currentTheme === 'dark' ? 'Auto' : 'Light'} Theme`;
 
@@ -86,11 +84,12 @@
     let chartInstance = null;
 
     function getThemeColors() {
+      const isDarkMedia = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       const isDark = body.classList.contains('dark') || 
-        (!body.classList.contains('light') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-      console.log('Is dark theme:', isDark);
+        (currentTheme === 'auto' && isDarkMedia);
+      console.log('Is dark theme:', isDark, 'Media query:', isDarkMedia, 'Classes:', body.className, 'Theme:', currentTheme);
       return {
-        textColor: isDark ? '#ffffff' : '#2c2c2c', // Pure white for dark mode visibility
+        textColor: isDark ? '#ffffff' : '#2c2c2c',
         gridColor: isDark ? '#555555' : '#cfd8dc',
         backgroundColor: isDark ? '#333333' : '#ffffff'
       };
@@ -189,8 +188,7 @@
                   display: false // Hide x-axis labels
                 },
                 grid: {
-                  color: colors.gridColor,
-                  display: false
+                  color: colors.gridColor
                 }
               },
               y: {
@@ -219,11 +217,20 @@
     updateChart();
 
     // Redraw chart on theme change
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-      console.log('Device theme changed');
-      if (!body.classList.contains('light') && !body.classList.contains('dark')) {
-        updateChart();
-      }
+    if (window.matchMedia) {
+      const darkMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      darkMediaQuery.addEventListener('change', () => {
+        console.log('Device theme changed to:', darkMediaQuery.matches ? 'dark' : 'light');
+        if (currentTheme === 'auto') {
+          applyTheme('auto');
+        }
+      });
+    }
+
+    // Force theme reapply on load
+    window.addEventListener('load', () => {
+      console.log('Page loaded, reapplying theme:', currentTheme);
+      applyTheme(currentTheme);
     });
   </script>
 </body>
