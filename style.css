@@ -53,7 +53,7 @@ section {
 canvas#financeChart {
   margin: 2rem 0;
   max-width: 100%; /* Ensure responsiveness on mobile */
-  background-color: #ffffff; /* Default for light mode */
+  background-color: #fafafa; /* Default for light mode */
 }
 
 .bank-details {
@@ -150,7 +150,7 @@ footer {
     background-color: #2c2c2c;
   }
   canvas#financeChart {
-    background-color: #333333; /* Ensure contrast with y-axis labels */
+    background-color: #1a1a1a; /* Ensure contrast with y-axis labels */
   }
   #themeToggle {
     background-color: #b3d4fc;
