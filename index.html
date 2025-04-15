@@ -117,7 +117,10 @@
           }
         });
         console.log('API response status:', res.status);
-        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`HTTP error! Status: ${res.status}, Details: ${errorText}`);
+        }
 
         const data = await res.json();
         console.log('API data:', data);
