@@ -50,8 +50,10 @@ section {
   margin-right: 1.5rem;
 }
 
-canvas {
+canvas#financeChart {
   margin: 2rem 0;
+  max-width: 100%; /* Ensure responsiveness on mobile */
+  background-color: #ffffff; /* Default for light mode */
 }
 
 .bank-details {
@@ -66,6 +68,21 @@ footer {
   text-align: center;
   padding: 1rem;
   font-size: 0.9rem;
+}
+
+#themeToggle {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #003366;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+#themeToggle:hover {
+  background-color: #005599;
 }
 
 /* Light theme (when device prefers light or no preference) */
@@ -93,6 +110,16 @@ footer {
   }
   footer {
     background-color: #f0f0f0;
+  }
+  canvas#financeChart {
+    background-color: #ffffff;
+  }
+  #themeToggle {
+    background-color: #003366;
+    color: #ffffff;
+  }
+  #themeToggle:hover {
+    background-color: #005599;
   }
 }
 
@@ -122,9 +149,19 @@ footer {
   footer {
     background-color: #2c2c2c;
   }
+  canvas#financeChart {
+    background-color: #333333; /* Ensure contrast with y-axis labels */
+  }
+  #themeToggle {
+    background-color: #b3d4fc;
+    color: #1e3a5f;
+  }
+  #themeToggle:hover {
+    background-color: #d1e4ff;
+  }
 }
 
-/* Class for manual theme override (optional, used with JS toggle) */
+/* Manual theme override classes */
 body.light {
   background-color: #fafafa !important;
   color: #2c2c2c !important;
@@ -148,6 +185,16 @@ body.light .bank-details {
 }
 body.light footer {
   background-color: #f0f0f0 !important;
+}
+body.light canvas#financeChart {
+  background-color: #ffffff !important;
+}
+body.light #themeToggle {
+  background-color: #003366 !important;
+  color: #ffffff !important;
+}
+body.light #themeToggle:hover {
+  background-color: #005599 !important;
 }
 
 body.dark {
@@ -173,4 +220,45 @@ body.dark .bank-details {
 }
 body.dark footer {
   background-color: #2c2c2c !important;
+}
+body.dark canvas#financeChart {
+  background-color: #333333 !important;
+}
+body.dark #themeToggle {
+  background-color: #b3d4fc !important;
+  color: #1e3a5f !important;
+}
+body.dark #themeToggle:hover {
+  background-color: #d1e4ff !important;
+}
+
+/* Fallback for browsers without prefers-color-scheme */
+@media not all and (prefers-color-scheme: dark) {
+  body {
+    background-color: #fafafa;
+    color: #2c2c2c;
+  }
+  header {
+    background-color: #e3f2fd;
+    color: #003366;
+  }
+  nav {
+    background-color: #f0f0f0;
+  }
+  nav a {
+    color: #003366;
+  }
+  .photo-placeholder {
+    background-color: #ccc;
+  }
+  .bank-details {
+    background: #fdfdfd;
+    border-color: #cfd8dc;
+  }
+  footer {
+    background-color: #f0f0f0;
+  }
+  canvas#financeChart {
+    background-color: #ffffff;
+  }
 }
