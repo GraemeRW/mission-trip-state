@@ -68,7 +68,7 @@
       return;
     }
 
-    const labels = data.map(row => row.xAxis);
+    const labels = data.map(row => row.id);
     const amounts = data.map(row => parseFloat(row.total_amount || 0));
     const target = data.find(row => row.target)?.target || 0;
 
