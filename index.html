@@ -50,17 +50,17 @@
   </footer>
 
   <script>
-    async function loadChartData() {
-      const res = await fetch('https://bfydvxpeyihkjbfarazq.supabase.co/rest/v1/finances?select=*', {
-        headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmeWR2eHBleWloa2piZmFyYXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTExNDEsImV4cCI6MjA2MDI4NzE0MX0.r7IYDSK2PCafQ5YqRX_Vznp4QrC1EFJJfhzPKDkRhC4',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmeWR2eHBleWloa2piZmFyYXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTExNDEsImV4cCI6MjA2MDI4NzE0MX0.r7IYDSK2PCafQ5YqRX_Vznp4QrC1EFJJfhzPKDkRhC4'
-        }
-      });
+    const res = await fetch('https://bfydvxpeyihkjbfarazq.supabase.co/rest/v1/finances?select=*', {
+      headers: {
+        apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmeWR2eHBleWloa2piZmFyYXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTExNDEsImV4cCI6MjA2MDI4NzE0MX0.r7IYDSK2PCafQ5YqRX_Vznp4QrC1EFJJfhzPKDkRhC4',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmeWR2eHBleWloa2piZmFyYXpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTExNDEsImV4cCI6MjA2MDI4NzE0MX0.r7IYDSK2PCafQ5YqRX_Vznp4QrC1EFJJfhzPKDkRhC4'
+      }
+    });
+
       const data = await res.json();
 
-      const labels = data.map(row => row.date);
-      const amounts = data.map(row => parseFloat(row.total_amount));
+      const labels = data.map(row => row.date || 'No Date);
+      const amounts = data.map(row => parseFloat(row.total_amount) || 0);
       const target = data.find(row => row.target)?.target || 0;
 
       const ctx = document.getElementById('financeChart').getContext('2d');
